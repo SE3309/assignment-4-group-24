@@ -22,6 +22,7 @@ app.use('/api/dashboard', dashboardRoutes); // Use dashboard routes
 app.use('/api', driverRoutes); // Use the drivers route
 app.use('/documents', documentRoutes);
 
+app.use(express.json());
 
 app.use('/api/clients', clientRoutes); 
 

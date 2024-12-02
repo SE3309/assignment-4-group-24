@@ -1,5 +1,6 @@
 const express = require('express');
-const { getDashboardData } = require('../controllers/dashboard-controller');
+
+const { getDashboardData, getExpenseReportByTruckId } = require('../controllers/dashboard-controller');
 
 const router = express.Router();
 
@@ -12,5 +13,7 @@ router.get('/data', (req, res) => {
     res.json(results);
   });
 });
+
+router.get('/expenses/:truckId', getExpenseReportByTruckId);
 
 module.exports = router;
