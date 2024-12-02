@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const authRoutes = require('./routes/auth');
 const cors = require('cors'); // Import cors
 const dashboardRoutes = require('./routes/dashboard'); // Import dashboard routes
+const clientRoutes = require('./routes/clients'); // Correct path to the routes/clients.js file
 
 
 
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes); // Use dashboard routes
 
+app.use('/api/clients', clientRoutes); 
 
 // Start server
 const PORT = 3000;
