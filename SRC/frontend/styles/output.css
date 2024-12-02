@@ -1138,3 +1138,60 @@ select {
     color: rgb(255 255 255 / var(--tw-text-opacity, 1));
   }
 }
+
+/* Ensure consistency in table rows */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  font-weight: bold;
+  background-color: #f9f9f9;
+}
+
+td {
+  vertical-align: middle; /* Align content in the middle */
+}
+
+/* Editable input and select fields */
+.editable input,
+.editable select {
+  width: 100%; /* Ensure it doesn't overflow the cell */
+  max-width: 150px; /* Limit the width to prevent misalignment */
+  box-sizing: border-box; /* Prevent padding from increasing width */
+  padding: 5px;
+  margin: 0; /* Remove any unnecessary margin */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Center-align dropdowns */
+.availability-select {
+  text-align: left; /* Align dropdown text */
+}
+
+/* Actions button styling */
+.actions-column {
+  text-align: center;
+  width: 100px;
+}
+
+.save-btn {
+  padding: 5px 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background-color: #218838;
+}
