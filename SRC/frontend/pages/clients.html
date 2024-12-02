@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../styles/output.css">
+  <title>Clients and Jobs</title>
+</head>
+<body class="h-screen bg-gray-100 flex">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gray-900 text-white flex flex-col">
+    <div class="flex items-center justify-center h-16 border-b border-gray-700">
+      <img src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600" alt="Logo" class="h-8 w-auto">
+    </div>
+    <nav class="flex-1 px-2 py-4 space-y-2">
+      <a href="dashboard.html" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg hover:bg-gray-800">
+        Dashboard
+      </a>
+      <a href="clients.html" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-gray-800">
+        Clients
+      </a>
+      <a href="drivers.html" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg hover:bg-gray-800">
+        Drivers
+      </a>
+      <a href="jobs.html" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg hover:bg-gray-800">
+        Jobs
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col">
+    <!-- Header -->
+    <header class="flex items-center justify-between px-6 py-4 h-16 bg-white border-b border-gray-300">
+      <h1 class="text-xl font-bold">Clients and Jobs</h1>
+      <div class="flex items-center space-x-4">
+        <div class="flex items-center justify-center w-10 h-10 bg-indigo-500 text-white rounded-full">A</div>
+        <button class="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600">Logout</button>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="flex-1 p-6 bg-gray-100">
+      <div class="bg-white shadow rounded-lg p-6">
+        <!-- Add Client Form -->
+        <form id="addClientForm" class="mb-6">
+          <div class="grid grid-cols-4 gap-4">
+            <input type="text" name="F_name" placeholder="First Name" class="border rounded-lg px-4 py-2" required />
+            <input type="text" name="L_name" placeholder="Last Name" class="border rounded-lg px-4 py-2" required />
+            <input type="email" name="Email" placeholder="Email" class="border rounded-lg px-4 py-2" required />
+            <input type="text" name="Phone_No" placeholder="Phone Number" class="border rounded-lg px-4 py-2" required />
+          </div>
+          <button type="submit" class="mt-4 px-6 py-2 bg-green-500 text-white rounded-lg">Add Client</button>
+        </form>
+
+        <!-- Clients Table -->
+        <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+          <thead>
+            <tr class="bg-gray-200 text-gray-700">
+              <th class="py-3 px-4 text-left">Client Name</th>
+              <th class="py-3 px-4 text-left">Email</th>
+              <th class="py-3 px-4 text-left">Phone Number</th>
+              <th class="py-3 px-4 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="clientsTable" class="divide-y divide-gray-200">
+            <!-- Dynamic Content Will Be Inserted Here -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <!-- Inline JavaScript -->
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const clientsTable = document.getElementById("clientsTable");
+      const addClientForm = document.getElementById("addClientForm");
+
+      // Fetch and populate clients
+      async function fetchClients() {
+        try {
+          const response = await fetch("http://localhost:3000/api/clients");
+          if (!response.ok) throw new Error("Failed to fetch clients");
+          const clientsData = await response.json();
+          populateClientsTable(clientsData);
+        } catch (error) {
+          console.error("Error fetching clients:", error);
+        }
+      }
+
+      // Populate clients table
+      function populateClientsTable(clientsData) {
+        clientsTable.innerHTML = ""; // Clear existing rows
+        clientsData.forEach((client) => {
+          const clientRow = document.createElement("tr");
+          clientRow.className = "bg-gray-100 border-b";
+
+          clientRow.innerHTML = `
+            <td class="py-3 px-4 font-bold text-lg">${client.F_name} ${client.L_name}</td>
+            <td class="py-3 px-4">${client.Email}</td>
+            <td class="py-3 px-4">${client.Phone_No}</td>
+            <td class="py-3 px-4">
+              <button class="px-4 py-2 bg-blue-500 text-white rounded edit-client" data-id="${client.Client_ID}">Edit</button>
+              <button class="px-4 py-2 bg-red-500 text-white rounded delete-client" data-id="${client.Client_ID}">Delete</button>
+              <button class="px-4 py-2 bg-green-500 text-white rounded view-jobs" data-id="${client.Client_ID}">View Jobs</button>
+            </td>
+          `;
+
+          const jobsRow = document.createElement("tr");
+          jobsRow.className = "hidden bg-gray-50";
+          jobsRow.innerHTML = `
+            <td colspan="4" class="py-3 px-4">
+              <ul id="jobs-${client.Client_ID}" class="list-disc pl-5"></ul>
+            </td>
+          `;
+
+          clientsTable.appendChild(clientRow);
+          clientsTable.appendChild(jobsRow);
+
+          // Attach event listeners to buttons
+          attachEventListeners(client, clientRow, jobsRow);
+        });
+      }
+
+      function attachEventListeners(client, clientRow, jobsRow) {
+        // View Jobs
+        clientRow.querySelector(".view-jobs").addEventListener("click", () => toggleJobs(client.Client_ID, jobsRow));
+
+        // Edit Client
+        clientRow.querySelector(".edit-client").addEventListener("click", () => editClient(client.Client_ID));
+
+        // Delete Client
+        clientRow.querySelector(".delete-client").addEventListener("click", () => deleteClient(client.Client_ID));
+      }
+
+      async function toggleJobs(clientId, jobsRow) {
+        if (jobsRow.classList.contains("hidden")) {
+          try {
+            const response = await fetch(`http://localhost:3000/api/clients/${clientId}/jobs`);
+            if (!response.ok) throw new Error("Failed to fetch jobs");
+            const jobsData = await response.json();
+
+            const jobsList = jobsRow.querySelector(`#jobs-${clientId}`);
+            jobsList.innerHTML = jobsData
+              .map((job) => `<li>Job ID: ${job.Job_ID}, Type: ${job.Job_Type}</li>`)
+              .join("");
+            jobsRow.classList.remove("hidden");
+          } catch (error) {
+            console.error("Error fetching jobs:", error);
+          }
+        } else {
+          jobsRow.classList.add("hidden");
+        }
+      }
+
+      async function addClient(event) {
+        event.preventDefault();
+        const formData = new FormData(addClientForm);
+        const newClient = {
+          F_name: formData.get("F_name"),
+          L_name: formData.get("L_name"),
+          Email: formData.get("Email"),
+          Phone_No: formData.get("Phone_No"),
+        };
+        try {
+          const response = await fetch("http://localhost:3000/api/clients", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newClient),
+          });
+          if (!response.ok) throw new Error("Failed to add client");
+          fetchClients();
+          addClientForm.reset();
+        } catch (error) {
+          console.error("Error adding client:", error);
+        }
+      }
+
+      async function editClient(clientId) {
+        const newDetails = prompt("Enter new details: FirstName, LastName, Email, PhoneNo");
+        if (!newDetails) return;
+
+        const [F_name, L_name, Email, Phone_No] = newDetails.split(", ");
+        try {
+          const response = await fetch(`http://localhost:3000/api/clients/${clientId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ F_name, L_name, Email, Phone_No }),
+          });
+          if (!response.ok) throw new Error("Failed to update client");
+          fetchClients();
+        } catch (error) {
+          console.error("Error updating client:", error);
+        }
+      }
+
+      async function deleteClient(clientId) {
+        if (!confirm("Are you sure you want to delete this client?")) return;
+        try {
+          const response = await fetch(`http://localhost:3000/api/clients/${clientId}`, {
+            method: "DELETE",
+          });
+          if (!response.ok) throw new Error("Failed to delete client");
+          fetchClients();
+        } catch (error) {
+          console.error("Error deleting client:", error);
+        }
+      }
+
+      addClientForm.addEventListener("submit", addClient);
+      fetchClients();
+    });
+  </script>
+</body>
+</html>
