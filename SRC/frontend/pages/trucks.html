@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../styles/output.css">
+  <title>Truck Management</title>
+</head>
+<body class="h-screen bg-gray-100 flex">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gray-900 text-white flex flex-col">
+    <div class="flex items-center justify-center h-16 border-b border-gray-700">
+      <img src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600" alt="Logo" class="h-8 w-auto">
+    </div>
+    <nav class="flex-1 px-2 py-4 space-y-2">
+      <a href="dashboard.html" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg hover:bg-gray-800">
+        Dashboard
+      </a>
+      <a href="dispatchers.html" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg hover:bg-gray-800">
+        Dispatchers
+      </a>
+      <a href="drivers.html" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg hover:bg-gray-800">
+        Drivers
+      </a>
+      <a href="trucks.html" class="flex items-center px-4 py-2 text-sm font-medium bg-gray-800 rounded-lg">
+        Trucks
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col">
+    <!-- Header -->
+    <header class="flex items-center justify-between px-6 py-4 h-16 bg-white border-b border-gray-300">
+      <h1 class="text-xl font-bold">Truck Management</h1>
+      <button class="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 focus:outline-none">
+        Logout
+      </button>
+    </header>
+
+    <!-- Content -->
+    <main class="flex-1 p-6 bg-white">
+      <!-- Form to Add a New Truck -->
+      <div class="mb-6">
+        <h2 class="text-lg font-semibold mb-4">Add a New Truck</h2>
+        <form id="add-truck-form" class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <input type="text" name="license-plate" placeholder="License Plate" required class="border p-2 rounded-lg">
+            <input type="text" name="truck-brand" placeholder="Truck Brand" required class="border p-2 rounded-lg">
+            <input type="number" name="max-capacity" placeholder="Max Capacity" required class="border p-2 rounded-lg">
+            <input type="number" name="total-driven" placeholder="Total Driven" required class="border p-2 rounded-lg">
+            <input type="text" name="availability" placeholder="Availability" required class="border p-2 rounded-lg">
+            <input type="date" name="last-service-date" required class="border p-2 rounded-lg">
+            <input type="number" name="dispatcher-id" placeholder="Dispatcher ID" required class="border p-2 rounded-lg">
+          </div>
+          <button type="submit" class="px-6 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600">
+            Add Truck
+          </button>
+        </form>
+      </div>
+
+      <!-- Truck List -->
+      <div>
+        <h2 class="text-lg font-semibold mb-4">Truck List</h2>
+        <table class="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr class="bg-gray-200">
+              <th class="border px-4 py-2">Truck ID</th>
+              <th class="border px-4 py-2">License Plate</th>
+              <th class="border px-4 py-2">Availability</th>
+              <th class="border px-4 py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="truck-table-body" class="bg-white">
+            <!-- Rows for trucks will be inserted here -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <!-- Include JavaScript -->
+  <script src="../js/trucks.js"></script>
+</body>
+</html>
