@@ -73,8 +73,9 @@
 
   <!-- Inline JavaScript -->
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
       const clientsTable = document.getElementById("clientsTable");
+      const addClientForm = document.getElementById("addClientForm");
 
       // Fetch and populate clients
       async function fetchClients() {
@@ -88,9 +89,9 @@
         }
       }
 
+      // Populate clients table
       function populateClientsTable(clientsData) {
         clientsTable.innerHTML = ""; // Clear existing rows
-
         clientsData.forEach((client) => {
           const clientRow = document.createElement("tr");
           clientRow.className = "bg-gray-100 border-b";
@@ -110,33 +111,104 @@
           jobsRow.className = "hidden bg-gray-50";
           jobsRow.innerHTML = `
             <td colspan="4" class="py-3 px-4">
-              <ul class="list-disc pl-5 jobs-list"></ul>
+              <ul id="jobs-${client.Client_ID}" class="list-disc pl-5"></ul>
             </td>
           `;
 
           clientsTable.appendChild(clientRow);
           clientsTable.appendChild(jobsRow);
 
-          // Add event listener for "View Jobs"
-          const viewJobsButton = clientRow.querySelector(".view-jobs");
-          viewJobsButton.addEventListener("click", () => toggleJobs(client.jobs, jobsRow));
+          // Attach event listeners to buttons
+          attachEventListeners(client, clientRow, jobsRow);
         });
       }
 
-      function toggleJobs(jobs, jobsRow) {
-        const jobsList = jobsRow.querySelector(".jobs-list");
+      function attachEventListeners(client, clientRow, jobsRow) {
+        // View Jobs
+        clientRow.querySelector(".view-jobs").addEventListener("click", () => toggleJobs(client.Client_ID, jobsRow));
+
+        // Edit Client
+        clientRow.querySelector(".edit-client").addEventListener("click", () => editClient(client.Client_ID));
+
+        // Delete Client
+        clientRow.querySelector(".delete-client").addEventListener("click", () => deleteClient(client.Client_ID));
+      }
+
+      async function toggleJobs(clientId, jobsRow) {
         if (jobsRow.classList.contains("hidden")) {
-          // Populate jobs
-          jobsList.innerHTML = jobs
-            .map((job) => `<li>Job ID: ${job.Job_ID}, Type: ${job.Job_Type}</li>`)
-            .join("");
-          jobsRow.classList.remove("hidden");
+          try {
+            const response = await fetch(`http://localhost:3000/api/clients/${clientId}/jobs`);
+            if (!response.ok) throw new Error("Failed to fetch jobs");
+            const jobsData = await response.json();
+
+            const jobsList = jobsRow.querySelector(`#jobs-${clientId}`);
+            jobsList.innerHTML = jobsData
+              .map((job) => `<li>Job ID: ${job.Job_ID}, Type: ${job.Job_Type}</li>`)
+              .join("");
+            jobsRow.classList.remove("hidden");
+          } catch (error) {
+            console.error("Error fetching jobs:", error);
+          }
         } else {
           jobsRow.classList.add("hidden");
         }
       }
 
-      // Initial fetch
+      async function addClient(event) {
+        event.preventDefault();
+        const formData = new FormData(addClientForm);
+        const newClient = {
+          F_name: formData.get("F_name"),
+          L_name: formData.get("L_name"),
+          Email: formData.get("Email"),
+          Phone_No: formData.get("Phone_No"),
+        };
+        try {
+          const response = await fetch("http://localhost:3000/api/clients", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newClient),
+          });
+          if (!response.ok) throw new Error("Failed to add client");
+          fetchClients();
+          addClientForm.reset();
+        } catch (error) {
+          console.error("Error adding client:", error);
+        }
+      }
+
+      async function editClient(clientId) {
+        const newDetails = prompt("Enter new details: FirstName, LastName, Email, PhoneNo");
+        if (!newDetails) return;
+
+        const [F_name, L_name, Email, Phone_No] = newDetails.split(", ");
+        try {
+          const response = await fetch(`http://localhost:3000/api/clients/${clientId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ F_name, L_name, Email, Phone_No }),
+          });
+          if (!response.ok) throw new Error("Failed to update client");
+          fetchClients();
+        } catch (error) {
+          console.error("Error updating client:", error);
+        }
+      }
+
+      async function deleteClient(clientId) {
+        if (!confirm("Are you sure you want to delete this client?")) return;
+        try {
+          const response = await fetch(`http://localhost:3000/api/clients/${clientId}`, {
+            method: "DELETE",
+          });
+          if (!response.ok) throw new Error("Failed to delete client");
+          fetchClients();
+        } catch (error) {
+          console.error("Error deleting client:", error);
+        }
+      }
+
+      addClientForm.addEventListener("submit", addClient);
       fetchClients();
     });
   </script>

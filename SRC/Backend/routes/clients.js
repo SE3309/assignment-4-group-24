@@ -10,7 +10,7 @@ const {
 } = require('../controllers/clients-controller');
 
 const router = express.Router();
-
+const app = express();
 // Define routes with the imported functions
 router.get('/', fetchAllClients);
 router.get('/:id', fetchClientById);
