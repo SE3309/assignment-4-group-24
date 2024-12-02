@@ -8,5 +8,6 @@ router.get('/:id', trucksController.getTruckDetails); // Fetch specific truck de
 router.post('/', trucksController.addTruck); // Add a new truck
 router.put('/:id', trucksController.updateTruck); // Update a truck's information
 router.delete('/:id', trucksController.deleteTruck); // Delete a truck
+router.get('/most-jobs', trucksController.getTruckWithMostJobs);
 
 module.exports = router;

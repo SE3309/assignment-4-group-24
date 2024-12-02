@@ -172,6 +172,82 @@ async function deleteTruck(id) {
     }
   }
   
-  // Fetch trucks on page load
-  window.onload = fetchTrucks;
+  async function fetchTruckWithMostJobs(month, year) {
+    try {
+      const response = await fetch(`http://localhost:3000/trucks/most-jobs?month=${month}&year=${year}`);
+  
+      if (!response.ok) {
+        const errorMessage = await response.text(); // Read error message from backend
+        throw new Error(errorMessage || `Error fetching truck with most jobs: ${response.statusText}`);
+      }
+  
+      const truck = await response.json();
+  
+      const container = document.getElementById('most-jobs-container');
+      if (!container) {
+        console.error('Element with id "most-jobs-container" not found in the DOM.');
+        return;
+      }
+  
+      if (truck.message) {
+        // If no truck is found
+        container.innerHTML = `
+          <p class="text-gray-500">No jobs found for the specified month and year.</p>
+        `;
+      } else {
+        // Truck found
+        container.innerHTML = `
+          <h3 class="text-lg font-semibold mb-2">Truck with Most Jobs (${month}/${year})</h3>
+          <p><strong>Truck ID:</strong> ${truck.Truck_ID}</p>
+          <p><strong>License Plate:</strong> ${truck.License_Plate}</p>
+          <p><strong>Brand:</strong> ${truck.Truck_Brand}</p>
+          <p><strong>Total Jobs:</strong> ${truck.Total_Jobs}</p>
+        `;
+      }
+    } catch (error) {
+      console.error('Error fetching truck with most jobs:', error);
+  
+      const container = document.getElementById('most-jobs-container');
+      if (container) {
+        container.innerHTML = `
+          <p class="text-red-500">Failed to fetch truck with most jobs. Please try again later.</p>
+        `;
+      }
+    }
+  }
+  
+
+// Handle the form submission
+document.getElementById('most-jobs-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent form submission from reloading the page
+    const month = document.getElementById('month').value;
+    const year = document.getElementById('year').value;
+
+    // Validate the inputs
+    if (!month || !year) {
+        alert('Please provide both month and year.');
+        return;
+    }
+
+    fetchTruckWithMostJobs(month, year);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetchTrucks();
+  
+    // Attach event listener for the form
+    document.getElementById('most-jobs-form').addEventListener('submit', function (event) {
+      event.preventDefault(); // Prevent page reload
+      const month = document.getElementById('month').value;
+      const year = document.getElementById('year').value;
+  
+      // Validate the inputs
+      if (!month || !year) {
+        alert('Please provide both month and year.');
+        return;
+      }
+  
+      fetchTruckWithMostJobs(month, year); // Fetch truck data
+    });
+  });
   
