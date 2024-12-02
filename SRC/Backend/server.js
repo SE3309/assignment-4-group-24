@@ -6,6 +6,7 @@ const dashboardRoutes = require('./routes/dashboard'); // Import dashboard route
 const driverRoutes = require('./routes/drivers');
 
 
+const documentRoutes = require('./routes/documents');
 
 
 const app = express();
@@ -18,6 +19,8 @@ app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes); // Use dashboard routes
 app.use('/api', driverRoutes); // Use the drivers route
+app.use('/documents', documentRoutes);
+
 
 // Start server
 const PORT = 3000;
