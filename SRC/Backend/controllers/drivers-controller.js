@@ -139,6 +139,63 @@ const deleteDriverByIdController = (req, res) => {
   });
 };
 
+const { getDriverDetails } = require('../models/driver');
+
+const fetchDriverDetails = (req, res) => {
+  const driverId = parseInt(req.params.id, 10);
+
+  console.log('Received request for Driver_ID:', driverId); // Debugging
+
+  if (isNaN(driverId)) {
+    console.error('Invalid Driver_ID:', driverId);
+    return res.status(400).json({ error: 'Invalid Driver_ID' });
+  }
+
+  getDriverDetails(driverId, (err, results) => {
+    if (err) {
+      console.error('Error fetching driver details:', err);
+      return res.status(500).json({ error: 'Failed to fetch driver details' });
+    }
+
+    if (results.length === 0) {
+      console.warn('Driver not found for ID:', driverId);
+      return res.status(404).json({ error: 'Driver not found' });
+    }
+
+    console.log('Driver details fetched:', results[0]); // Debugging
+    res.status(200).json(results[0]);
+  });
+};
+
+const { getCompletedJobs } = require('../models/driver');
+
+const fetchCompletedJobs = (req, res) => {
+  const driverId = parseInt(req.params.id, 10);
+  console.log('Received request for Driver_ID:', driverId); // Debugging
+
+  if (isNaN(driverId)) {
+    return res.status(400).json({ error: 'Invalid Driver_ID' });
+  }
+
+  getCompletedJobs(driverId, (err, results) => {
+    if (err) {
+      console.error('Error fetching completed jobs:', err);
+      return res.status(500).json({ error: 'Failed to fetch completed jobs' });
+    }
+
+    if (results.length === 0) {
+      console.warn('No completed jobs for Driver_ID:', driverId);
+      return res.status(404).json({ error: 'No completed jobs found' });
+    }
+
+    console.log('Completed jobs fetched:', results[0]); // Debugging
+    res.status(200).json(results[0]);
+  });
+};
+
+
+
+
 module.exports = {
   fetchPaginatedDrivers,
   fetchAvailableDriversCount,
@@ -146,4 +203,6 @@ module.exports = {
   addNewDriver,
   updateDriverById,
   deleteDriverByIdController, // Added delete controller
-};
+  fetchDriverDetails,
+  fetchCompletedJobs,
+}
