@@ -56,3 +56,59 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = 'login.html';
   });
 });
+
+
+
+document.getElementById('generateReportButton').addEventListener('click', async () => {
+  const truckId = document.getElementById('truckIdInput').value;
+
+  if (!truckId) {
+      alert('Please enter a Truck ID');
+      return;
+  }
+
+  try {
+      const response = await fetch('http://localhost:3000/api/dashboard/expenses/' + truckId);
+      if (!response.ok) {
+          const error = await response.json();
+          alert(error.message || 'Error fetching expense report');
+          return;
+      }
+
+      const expenses = await response.json();
+      const reportContainer = document.getElementById('reportContainer');
+      reportContainer.innerHTML = `
+          <table>
+              <tr>
+                  <th>Expense ID</th>
+                  <th>Job ID</th>
+                  <th>Truck ID</th>
+                  <th>Fuel Cost</th>
+                  <th>Toll Cost</th>
+                  <th>Other Expenses</th>
+                  <th>Total Cost</th>
+                  <th>Date</th>
+                  <th>License Plate</th>
+                  <th>Truck Brand</th>
+              </tr>
+              ${expenses.map(expense => `
+                  <tr>
+                      <td>${expense.Expense_ID}</td>
+                      <td>${expense.Job_ID}</td>
+                      <td>${expense.Truck_ID}</td>
+                      <td>${expense.Fuel_Cost}</td>
+                      <td>${expense.Toll_Cost}</td>
+                      <td>${expense.Other_Expenses}</td>
+                      <td>${expense.Total_Cost}</td>
+                      <td>${expense.Date}</td>
+                      <td>${expense.License_Plate}</td>
+                      <td>${expense.Truck_Brand}</td>
+                  </tr>
+              `).join('')}
+          </table>
+      `;
+  } catch (error) {
+      console.error(error);
+      alert('An error occurred while generating the report');
+  }
+});

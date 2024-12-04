@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../styles/output.css">
+  <link rel="icon" href="data:;base64,=">
   <title>Dashboard</title>
 </head>
 <body class="h-screen bg-gray-100 flex">
@@ -115,6 +116,30 @@
           </div>
         </div>
       </div>
+      <section class="bg-white shadow rounded-lg p-6 mb-6">
+        <h2 class="text-lg font-semibold mb-4">Generate Expense Report</h2>
+        <div class="flex items-center space-x-4">
+          <input 
+            type="text" 
+            id="truckIdInput" 
+            placeholder="Enter Truck ID" 
+            class="w-1/3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
+          >
+          <button 
+            id="generateReportButton" 
+            class="px-4 py-2 bg-indigo-500 text-white text-sm font-medium rounded-lg hover:bg-indigo-600">
+            Generate Report
+          </button>
+        </div>
+      </section>
+
+      <!-- Expense Report Table -->
+      <section class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-lg font-semibold mb-4">Expense Report</h2>
+        <div id="reportContainer" class="overflow-x-auto">
+          <!-- Report Table will be dynamically inserted here -->
+        </div>
+      </section>
     </main>
   </div>
 
