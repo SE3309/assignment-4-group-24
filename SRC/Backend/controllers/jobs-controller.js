@@ -23,6 +23,7 @@ const fetchPaginatedJobs = (req, res) => {
   });
 };
 
+
 const addNewJob = (req, res) => {
   const job = req.body;
   addJob(job, (err, result) => {

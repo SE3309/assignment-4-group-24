@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const row = document.createElement('tr');
       row.innerHTML = `
         <td>${job.Job_ID}</td>
-        <td>${job.Client_ID}</td>
+        <td>${job.ClientName || 'N/A'}</td>
         <td>${job.Number_Of_Trucks}</td>
         <td>${job.Start_Date}</td>
         <td>${job.End_Date || 'N/A'}</td>
