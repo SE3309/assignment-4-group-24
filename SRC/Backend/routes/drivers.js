@@ -1,9 +1,12 @@
 const express = require('express');
+
 const {
   fetchPaginatedDrivers,
   addNewDriver,
   updateDriverById,
   deleteDriverByIdController, // Import delete controller
+  fetchDriverDetails,
+  fetchCompletedJobs,
 } = require('../controllers/drivers-controller');
 
 const router = express.Router();
@@ -19,5 +22,12 @@ router.put('/drivers/:id', updateDriverById);
 
 // Route to delete a driver
 router.delete('/drivers/:id', deleteDriverByIdController);
+
+// Route to fetch driver details by ID
+router.get('/drivers/:id/details', fetchDriverDetails);
+
+// route to get completed jobs
+router.get('/drivers/:id/completed-jobs', fetchCompletedJobs);
+
 
 module.exports = router;
