@@ -129,7 +129,44 @@
         <button id="toggle-add-driver" class="px-4 py-2 bg-indigo-600 text-black font-medium rounded-lg border border-indigo-800 hover:bg-indigo-700">
             Add New Driver
           </button>
+    </div>
+    <div class="driver-details-section px-6 py-4">
+      <h2 class="text-lg font-semibold">Search Driver Details</h2>
+      <div class="flex items-center space-x-2">
+        <input 
+          type="number" 
+          id="driver-id-input" 
+          class="px-4 py-2 border rounded" 
+          placeholder="Enter Driver ID"
+        />
+        <button 
+          onclick="fetchDriverDetails(document.getElementById('driver-id-input').value)"
+          class="px-4 py-2 bg-indigo-600 text-black rounded hover:bg-indigo-700">
+          Search
+        </button>
       </div>
+      <div id="driver-details" class="mt-4"></div>
+    </div>
+    
+    <div class="driver-completed-jobs-section px-6 py-4">
+      <h2 class="text-lg font-semibold">Completed Jobs</h2>
+      <div class="flex items-center space-x-2">
+        <input 
+          type="number" 
+          id="driver-id-input" 
+          class="px-4 py-2 border rounded" 
+          placeholder="Enter Driver ID"
+        />
+        <button 
+          onclick="fetchCompletedJobs(document.getElementById('driver-id-input').value)"
+          class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+          Calculate Completed Jobs
+        </button>
+      </div>
+      <div id="completed-jobs-output" class="mt-4"></div>
+    </div>
+    
+      
       
     <!-- Add Driver Form -->
     <div id="add-driver-form-container" class="px-6 py-4 bg-white shadow rounded-lg">

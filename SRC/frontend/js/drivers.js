@@ -229,6 +229,71 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
+  
+  const fetchDriverDetails = (driverId) => {
+    console.log('Fetching driver details for ID:', driverId); // Debugging
+    fetch(`http://localhost:3000/api/drivers/${driverId}/details`)
+      .then(response => response.json())
+      .then(data => {
+        console.log('API response:', data); // Debugging
+        if (data.error) {
+          alert(data.error); // Show error if driver is not found
+        } else {
+          displayDriverDetails(data); // Pass the data to the display function
+        }
+      })
+      .catch(error => console.error('Error fetching driver details:', error));
+  };
+  window.fetchDriverDetails = fetchDriverDetails;
+
+// Function to display driver details in the UI
+const displayDriverDetails = (driver) => {
+  const detailsContainer = document.getElementById('driver-details');
+  detailsContainer.innerHTML = `
+    <div class="p-4 bg-gray-100 rounded">
+      <h3 class="text-lg font-bold">Driver Details</h3>
+      <p><strong>ID:</strong> ${driver.Driver_ID}</p>
+      <p><strong>Name:</strong> ${driver.F_Name} ${driver.L_Name}</p>
+      <p><strong>License Type:</strong> ${driver.License_Type}</p>
+      <p><strong>Phone:</strong> ${driver.Phone_No}</p>
+      <p><strong>Next Available Date:</strong> ${"12/24/25"}</p>
+    </div>
+  `;
+};
+
+// Function to fetch completed jobs
+const fetchCompletedJobs = (driverId) => {
+  console.log('Fetching completed jobs for Driver_ID:', driverId);
+
+  fetch(`http://localhost:3000/api/drivers/${driverId}/completed-jobs`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        alert(data.error);
+      } else {
+        displayCompletedJobs(data);
+      }
+    })
+    .catch(error => console.error('Error fetching completed jobs:', error));
+};
+
+// Function to display completed jobs
+const displayCompletedJobs = (data) => {
+  const outputContainer = document.getElementById('completed-jobs-output');
+  outputContainer.innerHTML = `
+    <div class="p-4 bg-gray-100 rounded">
+      <h3 class="text-lg font-bold">Completed Jobs</h3>
+      <p><strong>Driver ID:</strong> ${data.Driver_ID}</p>
+      <p><strong>Name:</strong> ${data.F_Name} ${data.L_Name}</p>
+      <p><strong>Total Completed Jobs:</strong> ${data.Total_Completed_Jobs}</p>
+    </div>
+  `;
+};
+
+// Expose function to the global scope
+window.fetchCompletedJobs = fetchCompletedJobs;
+
+
   // Initial fetch
   fetchDrivers();
 });
