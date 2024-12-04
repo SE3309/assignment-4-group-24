@@ -123,49 +123,46 @@ exports.deleteTruck = (req, res) => {
 
   exports.getTruckWithMostJobs = (req, res) => {
     const { month, year } = req.query;
-  
-    console.log('Received request for most jobs: ', { month, year }); // Add this log
-  
+
     if (!month || !year) {
-      console.error('Missing month or year in query parameters');
-      return res.status(400).json({ error: 'Month and year are required.' });
+        console.error('Month or year is missing in the request.');
+        return res.status(400).json({ error: 'Month and year are required.' });
     }
-  
+
     const query = `
-      SELECT 
-          t.Truck_ID,
-          t.License_Plate,
-          t.Truck_Brand,
-          COUNT(jd.Job_ID) AS Total_Jobs
-      FROM 
-          JobDetails jd
-      INNER JOIN 
-          Trucks t ON jd.Truck_ID = t.Truck_ID
-      INNER JOIN 
-          Jobs j ON jd.Job_ID = j.Job_ID
-      WHERE 
-          MONTH(j.Start_Date) = ? AND YEAR(j.Start_Date) = ?
-      GROUP BY 
-          t.Truck_ID
-      ORDER BY 
-          Total_Jobs DESC
-      LIMIT 1;
+        SELECT 
+            t.Truck_ID,
+            t.License_Plate,
+            t.Truck_Brand,
+            COUNT(jd.Job_ID) AS Total_Jobs
+        FROM 
+            JobDetails jd
+        INNER JOIN 
+            Trucks t ON jd.Truck_ID = t.Truck_ID
+        INNER JOIN 
+            Jobs j ON jd.Job_ID = j.Job_ID
+        WHERE 
+            MONTH(j.Start_Date) = ? AND YEAR(j.Start_Date) = ?
+        GROUP BY 
+            t.Truck_ID, t.License_Plate, t.Truck_Brand
+        ORDER BY 
+            Total_Jobs DESC
+        LIMIT 1;
     `;
-  
+
     db.query(query, [month, year], (err, results) => {
-      if (err) {
-        console.error('Error executing query:', err);
-        return res.status(500).json({ error: 'Database query failed.' });
-      }
-  
-      console.log('Query results:', results); // Add this log
-  
-      if (results.length === 0) {
-        console.log('No jobs found for the specified month and year.');
-        return res.status(404).json({ message: 'No jobs found for the specified month and year.' });
-      }
-  
-      res.json(results[0]);
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).json({ error: 'Database query failed.' });
+        }
+
+        if (results.length === 0) {
+            console.log('No jobs found for the specified month and year.');
+            return res.status(404).json({ message: 'No jobs found for the specified month and year.' });
+        }
+
+        console.log('Query result:', results[0]); // Log the result
+        res.json(results[0]); // Send the first result as JSON
     });
-  };
+};
   

@@ -5,17 +5,13 @@ const {
   deleteJobById,
 } = require('../models/jobs');
 
-// Fetch paginated, sorted, and filtered jobs
 const fetchPaginatedJobs = (req, res) => {
   const limit = parseInt(req.query.limit) || 25;
   const offset = parseInt(req.query.offset) || 0;
   const primarySortKey = req.query.primarySortKey || 'Start_Date';
   const sortOrder = req.query.sortOrder || 'ASC';
   const filters = {
-    clientName: req.query.clientName || '',
-    jobStatus: req.query.jobStatus || undefined,
-    startDate: req.query.startDate || '',
-    endDate: req.query.endDate || '',
+    clientName: req.query.search || '',
   };
 
   getPaginatedJobs(limit, offset, primarySortKey, sortOrder, filters, (err, results) => {
@@ -27,7 +23,6 @@ const fetchPaginatedJobs = (req, res) => {
   });
 };
 
-// Add a new job
 const addNewJob = (req, res) => {
   const job = req.body;
   addJob(job, (err, result) => {
@@ -39,7 +34,6 @@ const addNewJob = (req, res) => {
   });
 };
 
-// Update a job
 const updateJobById = (req, res) => {
   const jobId = req.params.id;
   const jobData = req.body;
@@ -52,7 +46,6 @@ const updateJobById = (req, res) => {
   });
 };
 
-// Delete a job
 const deleteJobByIdController = (req, res) => {
   const jobId = req.params.id;
   deleteJobById(jobId, (err, result) => {
@@ -64,9 +57,22 @@ const deleteJobByIdController = (req, res) => {
   });
 };
 
+
+const fetchJobById = (req, res) => {
+  const jobId = req.params.id;
+  getJobById(jobId, (err, result) => {
+    if (err) {
+      console.error('Error fetching job by ID:', err);
+      return res.status(500).json({ error: 'Failed to fetch job' });
+    }
+    res.status(200).json(result[0]);
+  });
+};
+
 module.exports = {
   fetchPaginatedJobs,
   addNewJob,
   updateJobById,
   deleteJobByIdController,
+  fetchJobById, // Export this
 };

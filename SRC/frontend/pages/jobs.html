@@ -128,21 +128,54 @@
       </button>
     </div>
 
-    <!-- Add Job Form -->
-    <div id="add-job-form-container" class="px-6 py-4 bg-white shadow rounded-lg">
-      <h3 class="text-lg font-semibold mb-4">Add New Job</h3>
-      <form id="add-job-form" class="grid grid-cols-1 gap-4">
-        <input type="text" id="Client_ID" name="Client_ID" placeholder="Client ID" required class="px-4 py-2 border rounded-md" />
-        <input type="number" id="Number_Of_Trucks" name="Number_Of_Trucks" placeholder="Number of Trucks" required class="px-4 py-2 border rounded-md" />
-        <input type="datetime-local" id="Start_Date" name="Start_Date" required class="px-4 py-2 border rounded-md" />
-        <input type="datetime-local" id="End_Date" name="End_Date" class="px-4 py-2 border rounded-md" />
-        <select id="job_status" name="job_status" required class="px-4 py-2 border rounded-md">
+   <!-- Add Job Modal -->
+   <div id="job-modal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
+    <div class="bg-white p-6 rounded-lg w-1/3">
+      <h3 id="modal-title" class="text-lg font-semibold mb-4">Add/Edit Job</h3>
+      <form id="job-form">
+        <input type="hidden" id="Job_ID" name="Job_ID" />
+  
+        <!-- Client and Dispatcher -->
+        <input type="number" id="Client_ID" name="Client_ID" placeholder="Client ID" required class="mb-3 w-full px-4 py-2 border rounded-md" />
+        <input type="number" id="Dispatcher_ID" name="Dispatcher_ID" placeholder="Dispatcher ID" required class="mb-3 w-full px-4 py-2 border rounded-md" />
+  
+        <!-- Job Details -->
+        <input type="text" id="Job_Type" name="Job_Type" placeholder="Job Type" required class="mb-3 w-full px-4 py-2 border rounded-md" />
+        <input type="number" id="Number_Of_Trucks" name="Number_Of_Trucks" placeholder="Number of Trucks" required class="mb-3 w-full px-4 py-2 border rounded-md" />
+  
+        <!-- Dates -->
+        <input type="datetime-local" id="Start_Date" name="Start_Date" required class="mb-3 w-full px-4 py-2 border rounded-md" />
+        <input type="datetime-local" id="End_Date" name="End_Date" class="mb-3 w-full px-4 py-2 border rounded-md" />
+  
+        <!-- Pickup and Dropoff -->
+        <input type="text" id="p_address" name="p_address" placeholder="Pickup Address" class="mb-3 w-full px-4 py-2 border rounded-md" />
+        <input type="text" id="p_city" name="p_city" placeholder="Pickup City" class="mb-3 w-full px-4 py-2 border rounded-md" />
+        <input type="text" id="p_state_province" name="p_state_province" placeholder="Pickup State/Province" class="mb-3 w-full px-4 py-2 border rounded-md" />
+        <input type="text" id="p_country" name="p_country" placeholder="Pickup Country" class="mb-3 w-full px-4 py-2 border rounded-md" />
+        <input type="text" id="p_zip_code" name="p_zip_code" placeholder="Pickup Zip Code" class="mb-3 w-full px-4 py-2 border rounded-md" />
+  
+        <input type="text" id="d_address" name="d_address" placeholder="Dropoff Address" class="mb-3 w-full px-4 py-2 border rounded-md" />
+        <input type="text" id="d_city" name="d_city" placeholder="Dropoff City" class="mb-3 w-full px-4 py-2 border rounded-md" />
+        <input type="text" id="d_state_province" name="d_state_province" placeholder="Dropoff State/Province" class="mb-3 w-full px-4 py-2 border rounded-md" />
+        <input type="text" id="d_country" name="d_country" placeholder="Dropoff Country" class="mb-3 w-full px-4 py-2 border rounded-md" />
+        <input type="text" id="d_zip_code" name="d_zip_code" placeholder="Dropoff Zip Code" class="mb-3 w-full px-4 py-2 border rounded-md" />
+  
+        <!-- Status -->
+        <select id="job_status" name="job_status" required class="mb-3 w-full px-4 py-2 border rounded-md">
           <option value="0">In Progress</option>
           <option value="1">Completed</option>
         </select>
-        <button type="submit" class="px-4 py-2 bg-indigo-600 text-black rounded-lg hover:bg-indigo-700">Add Job</button>
+  
+        <!-- Buttons -->
+        <div class="flex justify-end space-x-2">
+          <button type="button" id="cancel-modal" class="px-4 py-2 bg-gray-300 rounded-lg">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg">Save</button>
+        </div>
       </form>
     </div>
+  </div>
+  
+
 
     <!-- Pagination Controls -->
     <div class="flex justify-center items-center mt-4">
