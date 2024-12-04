@@ -749,8 +749,74 @@ select {
   outline: 1px auto -webkit-focus-ring-color;
 }
 
+.\!container {
+  width: 100% !important;
+}
+
+.container {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .\!container {
+    max-width: 640px !important;
+  }
+
+  .container {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px) {
+  .\!container {
+    max-width: 768px !important;
+  }
+
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .\!container {
+    max-width: 1024px !important;
+  }
+
+  .container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .\!container {
+    max-width: 1280px !important;
+  }
+
+  .container {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .\!container {
+    max-width: 1536px !important;
+  }
+
+  .container {
+    max-width: 1536px;
+  }
+}
+
 .fixed {
   position: fixed;
+}
+
+.inset-0 {
+  inset: 0px;
+}
+
+.z-50 {
+  z-index: 50;
 }
 
 .mb-2 {
@@ -865,6 +931,10 @@ select {
   table-layout: auto;
 }
 
+.border-collapse {
+  border-collapse: collapse;
+}
+
 .list-disc {
   list-style-type: disc;
 }
@@ -921,6 +991,12 @@ select {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+}
+
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1rem * var(--tw-space-y-reverse));
 }
 
 .divide-y > :not([hidden]) ~ :not([hidden]) {
@@ -989,6 +1065,11 @@ select {
   border-color: rgb(55 48 163 / var(--tw-border-opacity, 1));
 }
 
+.bg-black {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1));
+}
+
 .bg-blue-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1));
@@ -1054,6 +1135,10 @@ select {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
 }
 
+.bg-opacity-50 {
+  --tw-bg-opacity: 0.5;
+}
+
 .p-2 {
   padding: 0.5rem;
 }
@@ -1069,6 +1154,11 @@ select {
 .px-2 {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+}
+
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 
 .px-4 {

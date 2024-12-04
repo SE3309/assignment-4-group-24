@@ -22,8 +22,12 @@ const getDashboardData = (callback) => {
   });
 };
 
+
+
 const getExpenseReportByTruckId = async (req, res) => {
+
   const truckId = parseInt(req.params.truckId, 10); // Ensure it's converted to an integer
+  console.log(req.params.truckId);
 
    // Validate truckId
    if (isNaN(truckId)) {
@@ -43,17 +47,24 @@ const getExpenseReportByTruckId = async (req, res) => {
       `;
       console.log('Executing query:', query);
       console.log('Truck ID:', truckId);
+          // Perform the query and get the result
+    const [rows] = await db.promise().execute(query, [truckId]); 
 
-      const [rows] = await db.execute(query, [truckId]);
-      if (!Array.isArray(rows) || rows.length === 0) {
-        return res.status(404).json({ message: 'No expenses found for the given Truck ID' });
+    // Access rows correctly (likely `result[0]` or `result[0]._rows`)
+    console.log('Rows:', rows);
+
+    // If no rows are found, return a 404 error
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'No expenses found for the given Truck ID' });
     }
-    res.json(rows);  } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'An error occurred while retrieving the expense report' });
+
+    // Send the rows as JSON response
+    res.json(rows);
+  } catch (error) {
+    console.error('Error executing query:', error.stack);
+    res.status(500).json({ error: 'An error occurred while retrieving the expense report' });
   }
 };
-
 
 
 module.exports = { getDashboardData, getExpenseReportByTruckId};
