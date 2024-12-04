@@ -68,6 +68,58 @@ const deleteDriverById = (driverId, callback) => {
   db.query(query, [driverId], callback);
 };
 
+const getDriverDetails = (driverId, callback) => {
+  const query = `
+    SELECT 
+      d.Driver_ID,
+      d.F_Name,
+      d.L_Name,
+      d.License_Type,
+      d.Availability,
+      d.Phone_No,
+      d.Dispatcher_ID,
+      COALESCE(MIN(j.End_Date), 'No upcoming jobs') AS Next_Available_Date
+    FROM 
+      Drivers d
+    LEFT JOIN 
+      JobDetails jd ON d.Driver_ID = jd.Driver_ID
+    LEFT JOIN 
+      Jobs j ON jd.Job_ID = j.Job_ID AND j.End_Date > NOW()
+    WHERE 
+      d.Driver_ID = ?
+    GROUP BY 
+      d.Driver_ID;
+  `;
+  db.query(query, [driverId], callback);
+};
+
+const getCompletedJobs = (driverId, callback) => {
+  const query = `
+    SELECT 
+        d.Driver_ID,
+        d.F_Name,
+        d.L_Name,
+        COUNT(j.Job_ID) AS Total_Completed_Jobs
+    FROM 
+        Drivers d
+    LEFT JOIN 
+        JobDetails jd ON d.Driver_ID = jd.Driver_ID
+    LEFT JOIN 
+        Jobs j ON jd.Job_ID = j.Job_ID
+    WHERE 
+        j.job_status = 1
+        AND d.Driver_ID = ?
+    GROUP BY 
+        d.Driver_ID;
+  `;
+
+  db.query(query, [driverId], callback);
+};
+
+
+
+
+
 module.exports = {
   getPaginatedDrivers,
   getAvailableDriversCount,
@@ -75,4 +127,6 @@ module.exports = {
   addDriver,
   updateDriver,
   deleteDriverById, // Added delete function
+  getDriverDetails,
+  getCompletedJobs,
 };
